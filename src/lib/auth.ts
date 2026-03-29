@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { organization, phoneNumber } from "better-auth/plugins";
 import { prisma } from "@/lib/prisma";
 import { sendOtpSms } from "@/lib/sms";
@@ -55,5 +55,7 @@ export const auth = betterAuth({
 
   trustedOrigins: [
     process.env.BETTER_AUTH_URL || "http://localhost:3000",
+    "https://duka-rho.vercel.app",
+    "http://localhost:3000",
   ],
 });
