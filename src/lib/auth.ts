@@ -41,6 +41,13 @@ export const auth = betterAuth({
     }),
   ],
 
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google", "github", "email-password"],
+    },
+  },
+
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day
