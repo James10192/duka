@@ -28,111 +28,34 @@ import { MetricCard } from "@/components/landing/metric-card";
 import { PulseLine } from "@/components/landing/pulse-line";
 import { POSTerminal } from "@/components/landing/pos-terminal";
 
-const features = [
-  {
-    icon: Package,
-    title: "Gestion de stock",
-    description:
-      "Stock temps reel, alertes de rupture, mouvements entree/sortie, valorisation automatique.",
-  },
-  {
-    icon: ShoppingCart,
-    title: "Point de vente",
-    description:
-      "Interface POS rapide, panier intelligent, paiement mixte, facture automatique.",
-  },
-  {
-    icon: FileText,
-    title: "Factures OHADA",
-    description:
-      "Numerotation sequentielle, generation PDF, envoi WhatsApp, 3 templates professionnels.",
-  },
-  {
-    icon: Users,
-    title: "CRM Clients",
-    description:
-      "Historique achats, segmentation automatique, score fidelite, rappels occasions.",
-  },
-  {
-    icon: Sparkles,
-    title: "IA Generative",
-    description:
-      "Plans d'action, strategies pricing, messages de relance, analyses de performance.",
-  },
-  {
-    icon: Smartphone,
-    title: "Mobile Money",
-    description:
-      "MTN MoMo, Orange Money, Wave, Moov via CinetPay. Reconciliation automatique.",
-  },
+const starterFeatures = [
+  "50 produits",
+  "1 utilisateur",
+  "1 boutique",
+  "100 ventes / mois",
+  "Facturation de base",
 ];
 
-const plans = [
-  {
-    name: "Starter",
-    price: "0",
-    suffix: "FCFA",
-    period: "Gratuit pour toujours",
-    features: [
-      "50 produits",
-      "1 utilisateur",
-      "1 boutique",
-      "100 ventes / mois",
-      "Facturation de base",
-    ],
-    cta: "Commencer gratuitement",
-    highlighted: false,
-  },
-  {
-    name: "Pro",
-    price: "9 900",
-    suffix: "FCFA / mois",
-    period: "Populaire",
-    features: [
-      "Produits illimites",
-      "3 utilisateurs",
-      "Ventes illimitees",
-      "20 generations IA",
-      "Mobile Money",
-      "Scan code-barres",
-      "Export donnees",
-    ],
-    cta: "Essai gratuit 14 jours",
-    highlighted: true,
-  },
-  {
-    name: "Business",
-    price: "24 900",
-    suffix: "FCFA / mois",
-    period: "Multi-sites",
-    features: [
-      "10 utilisateurs",
-      "5 boutiques",
-      "100 generations IA",
-      "10 Go stockage",
-      "CRM automatise",
-      "Tout de Pro inclus",
-    ],
-    cta: "Essai gratuit 14 jours",
-    highlighted: false,
-  },
-  {
-    name: "Enterprise",
-    price: "Sur devis",
-    suffix: "",
-    period: "Sur mesure",
-    features: [
-      "Utilisateurs illimites",
-      "Boutiques illimitees",
-      "IA illimitee",
-      "Stockage illimite",
-      "SLA garanti",
-      "Account manager dedie",
-    ],
-    cta: "Contacter l'equipe",
-    highlighted: false,
-  },
+const proFeatures = [
+  "Produits illimites",
+  "3 utilisateurs",
+  "Ventes illimitees",
+  "20 generations IA",
+  "Mobile Money",
+  "Scan code-barres",
+  "Export donnees",
 ];
+
+const businessFeatures = [
+  "10 utilisateurs",
+  "5 boutiques",
+  "100 generations IA",
+  "10 Go stockage",
+  "CRM automatise",
+  "Tout de Pro inclus",
+];
+
+/* Enterprise features are inlined in the CTA bar below the pricing grid */
 
 const team = [
   {
@@ -312,25 +235,142 @@ export default function HomePage() {
               </p>
             </AnimatedSection>
 
-            <StaggerContainer className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((feature) => (
-                <StaggerItem key={feature.title}>
-                  <div className="group relative rounded-lg border border-zinc-800/50 bg-zinc-900/20 p-6 transition-all duration-300 hover:border-zinc-700 hover:bg-zinc-900/50">
-                    <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    <div className="relative">
-                      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
-                        <feature.icon className="size-5" />
-                      </div>
-                      <h3 className="mb-2 font-semibold text-zinc-100">
-                        {feature.title}
-                      </h3>
-                      <p className="text-sm leading-relaxed text-zinc-400">
-                        {feature.description}
-                      </p>
+            <StaggerContainer className="grid grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-3">
+              {/* Stock — spans 2 cols, row 1 */}
+              <StaggerItem className="md:col-span-2">
+                <div className="group relative h-full rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-zinc-900/40">
+                  <div className="relative">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                      <Package className="size-5" />
+                    </div>
+                    <h3 className="mb-2 font-semibold text-zinc-100">
+                      Gestion de stock
+                    </h3>
+                    <p className="mb-5 text-sm leading-relaxed text-zinc-400">
+                      Stock temps reel, alertes de rupture, mouvements entree/sortie, valorisation automatique, seuils configurables.
+                    </p>
+                    {/* Mini stock bars visualization */}
+                    <div className="flex items-end gap-2 rounded-lg border border-zinc-800/50 bg-zinc-950/60 p-3">
+                      {[
+                        { label: "Riz 25kg", pct: 82, color: "bg-primary" },
+                        { label: "Huile 1L", pct: 45, color: "bg-amber-500" },
+                        { label: "Sucre 1kg", pct: 12, color: "bg-red-500" },
+                        { label: "Lait 500ml", pct: 67, color: "bg-primary" },
+                        { label: "Savon", pct: 91, color: "bg-primary" },
+                      ].map((item) => (
+                        <div key={item.label} className="flex flex-1 flex-col items-center gap-1.5">
+                          <div className="relative h-16 w-full rounded-sm bg-zinc-800/60">
+                            <div
+                              className={`absolute bottom-0 w-full rounded-sm ${item.color} transition-all`}
+                              style={{ height: `${item.pct}%` }}
+                            />
+                          </div>
+                          <span className="text-[10px] leading-tight text-zinc-500">{item.label}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </StaggerItem>
-              ))}
+                </div>
+              </StaggerItem>
+
+              {/* POS — 1 col, row 1 */}
+              <StaggerItem>
+                <div className="group relative h-full rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-zinc-900/40">
+                  <div className="relative">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                      <ShoppingCart className="size-5" />
+                    </div>
+                    <h3 className="mb-2 font-semibold text-zinc-100">
+                      Point de vente
+                    </h3>
+                    <p className="text-sm leading-relaxed text-zinc-400">
+                      Interface POS ultra-rapide, panier intelligent, paiement mixte (especes + Mobile Money), facture auto en 1 tap.
+                    </p>
+                  </div>
+                </div>
+              </StaggerItem>
+
+              {/* OHADA — 1 col, row 2 */}
+              <StaggerItem>
+                <div className="group relative h-full rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-zinc-900/40">
+                  <div className="relative">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                      <FileText className="size-5" />
+                    </div>
+                    <h3 className="mb-2 font-semibold text-zinc-100">
+                      Factures OHADA
+                    </h3>
+                    <p className="text-sm leading-relaxed text-zinc-400">
+                      Numerotation sequentielle sans trou, generation PDF, envoi WhatsApp, 3 templates professionnels, conformite 100%.
+                    </p>
+                  </div>
+                </div>
+              </StaggerItem>
+
+              {/* CRM — 1 col, row 2 */}
+              <StaggerItem>
+                <div className="group relative h-full rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-zinc-900/40">
+                  <div className="relative">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                      <Users className="size-5" />
+                    </div>
+                    <h3 className="mb-2 font-semibold text-zinc-100">
+                      CRM Clients
+                    </h3>
+                    <p className="text-sm leading-relaxed text-zinc-400">
+                      Historique achats complet, segmentation automatique, score fidelite RFM, rappels occasions, credit informel.
+                    </p>
+                  </div>
+                </div>
+              </StaggerItem>
+
+              {/* IA — 1 col, spans 2 rows (row 2-3) */}
+              <StaggerItem className="md:row-span-2">
+                <div className="group relative h-full rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-zinc-900/40">
+                  <div className="relative flex h-full flex-col">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                      <Sparkles className="size-5" />
+                    </div>
+                    <h3 className="mb-2 font-semibold text-zinc-100">
+                      IA Generative
+                    </h3>
+                    <p className="mb-5 text-sm leading-relaxed text-zinc-400">
+                      Plans d&apos;action 30 jours, strategies pricing, messages relance WhatsApp, analyses performance, previsions.
+                    </p>
+                    {/* Fake AI generation output */}
+                    <div className="mt-auto space-y-2 rounded-lg border border-zinc-800/50 bg-zinc-950/60 p-3 font-mono text-xs">
+                      <div className="flex items-center gap-2 text-primary">
+                        <Sparkles className="size-3" />
+                        <span className="text-zinc-500">Analyse en cours...</span>
+                      </div>
+                      <div className="space-y-1.5 text-zinc-400">
+                        <p>&gt; Marge moyenne: <span className="text-primary">34%</span></p>
+                        <p>&gt; Produit star: <span className="text-zinc-200">Riz 25kg</span></p>
+                        <p>&gt; Action: <span className="text-zinc-200">Augmenter stock</span></p>
+                        <p>&gt; <span className="text-zinc-200">Huile en promo -10%</span></p>
+                        <p className="text-primary">Prevision +18% CA ce mois</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </StaggerItem>
+
+              {/* Mobile Money — spans 2 cols, row 3 */}
+              <StaggerItem className="md:col-span-2">
+                <div className="group relative h-full rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-zinc-900/40">
+                  <div className="relative">
+                    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-primary/10 bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                      <Smartphone className="size-5" />
+                    </div>
+                    <h3 className="mb-2 font-semibold text-zinc-100">
+                      Mobile Money
+                    </h3>
+                    <p className="text-sm leading-relaxed text-zinc-400">
+                      MTN MoMo, Orange Money, Wave, Moov via CinetPay. Confirmation temps reel, reconciliation automatique.
+                    </p>
+                  </div>
+                </div>
+              </StaggerItem>
             </StaggerContainer>
           </div>
         </section>
@@ -356,7 +396,7 @@ export default function HomePage() {
 
         {/* ───── Pricing ───── */}
         <section id="tarifs" className="scroll-mt-20 py-20 md:py-28">
-          <div className="mx-auto max-w-6xl px-6">
+          <div className="mx-auto max-w-5xl px-6">
             <AnimatedSection className="mx-auto mb-14 max-w-2xl text-center">
               <h2 className="mb-4 font-mono text-2xl font-bold tracking-tight text-zinc-100 md:text-3xl">
                 Tarification simple et transparente
@@ -366,70 +406,114 @@ export default function HomePage() {
               </p>
             </AnimatedSection>
 
-            <StaggerContainer className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {plans.map((plan) => (
-                <StaggerItem key={plan.name} className="flex">
-                  <Card
-                    className={`flex h-full flex-col ${
-                      plan.highlighted
-                        ? "relative border-primary/40 bg-zinc-900/60"
-                        : "border-zinc-800/50 bg-zinc-900/20"
-                    }`}
-                  >
-                    {plan.highlighted && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-primary text-primary-foreground">
-                          Populaire
-                        </Badge>
-                      </div>
-                    )}
-                    <CardHeader className="pb-4">
-                      <p className="text-sm font-medium text-zinc-400">
-                        {plan.name}
-                      </p>
-                      <div className="mt-2">
-                        {plan.price === "Sur devis" ? (
-                          <span className="font-mono text-xl font-bold text-zinc-100">
-                            Sur devis
-                          </span>
-                        ) : (
-                          <div className="flex items-baseline gap-1">
-                            <span className="font-mono text-3xl font-bold text-zinc-100">
-                              {plan.price}
-                            </span>
-                            <span className="text-sm text-zinc-500">
-                              {plan.suffix}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="flex-1 pb-4">
-                      <ul className="space-y-2.5">
-                        {plan.features.map((feature) => (
-                          <li
-                            key={feature}
-                            className="flex items-start gap-2 text-sm text-zinc-400"
-                          >
-                            <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                    <CardFooter>
-                      <Button
-                        variant={plan.highlighted ? "default" : "outline"}
-                        className="w-full"
-                        asChild
-                      >
-                        <Link href="/register">{plan.cta}</Link>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </StaggerItem>
-              ))}
+            {/* 3-column pricing grid */}
+            <StaggerContainer className="grid gap-4 md:grid-cols-3">
+              {/* Starter */}
+              <StaggerItem className="flex">
+                <Card className="flex h-full flex-col border-zinc-800/50 bg-zinc-900/20">
+                  <CardHeader className="p-5 pb-3">
+                    <p className="text-sm font-medium text-zinc-400">Starter</p>
+                    <div className="mt-2">
+                      <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
+                        0 FCFA
+                      </span>
+                      <span className="ml-1 text-xs text-zinc-500">Gratuit pour toujours</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 p-5 pt-2">
+                    <ul className="space-y-2">
+                      {starterFeatures.map((f) => (
+                        <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
+                          <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="p-5 pt-0">
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/register">Commencer gratuitement</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </StaggerItem>
+
+              {/* Pro — highlighted */}
+              <StaggerItem className="flex">
+                <Card className="relative flex h-full flex-col border-primary/40 bg-zinc-900/60 shadow-lg shadow-primary/10 md:-my-2">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-primary text-primary-foreground">Populaire</Badge>
+                  </div>
+                  <CardHeader className="p-5 pb-3 pt-6">
+                    <p className="text-sm font-medium text-zinc-400">Pro</p>
+                    <div className="mt-2">
+                      <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
+                        9 900 FCFA/mois
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 p-5 pt-2">
+                    <ul className="space-y-2">
+                      {proFeatures.map((f) => (
+                        <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
+                          <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="p-5 pt-0">
+                    <Button className="w-full" asChild>
+                      <Link href="/register">Essai gratuit 14 jours</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </StaggerItem>
+
+              {/* Business */}
+              <StaggerItem className="flex">
+                <Card className="flex h-full flex-col border-zinc-800/50 bg-zinc-900/20">
+                  <CardHeader className="p-5 pb-3">
+                    <p className="text-sm font-medium text-zinc-400">Business</p>
+                    <div className="mt-2">
+                      <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
+                        24 900 FCFA/mois
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 p-5 pt-2">
+                    <ul className="space-y-2">
+                      {businessFeatures.map((f) => (
+                        <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
+                          <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="p-5 pt-0">
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/register">Essai gratuit 14 jours</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </StaggerItem>
             </StaggerContainer>
+
+            {/* Enterprise — full-width CTA bar */}
+            <AnimatedSection className="mt-4">
+              <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-zinc-800/50 bg-zinc-900/20 px-6 py-5 sm:flex-row">
+                <div>
+                  <p className="font-semibold text-zinc-100">Enterprise</p>
+                  <p className="text-sm text-zinc-400">
+                    Sur mesure — utilisateurs, boutiques, IA et stockage illimites. SLA garanti, account manager dedie.
+                  </p>
+                </div>
+                <Button variant="outline" className="shrink-0 whitespace-nowrap" asChild>
+                  <Link href="/register">Contacter l&apos;equipe</Link>
+                </Button>
+              </div>
+            </AnimatedSection>
           </div>
         </section>
 
