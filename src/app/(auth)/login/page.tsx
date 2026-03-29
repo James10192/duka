@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { phoneAuth, signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import { DukaLogo } from "@/components/duka-logo";
 
 export default function LoginPage() {
   return (
@@ -85,10 +86,9 @@ function LoginForm() {
       <div className="relative space-y-6">
         {/* Logo */}
         <div className="text-center">
-          <div className="relative mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-            <span className="font-mono text-xl font-bold text-primary">D</span>
-            <div className="absolute inset-0 rounded-xl bg-primary/5 blur-xl" />
-          </div>
+          <Link href="/" className="mb-6 inline-block">
+            <DukaLogo size={28} />
+          </Link>
           <h1 className="font-mono text-2xl font-bold tracking-tight text-zinc-100">
             Connexion
           </h1>

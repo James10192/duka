@@ -12,6 +12,7 @@ import {
   Sparkles,
   Settings,
 } from "lucide-react";
+import { DukaLogo } from "@/components/duka-logo";
 import {
   Sidebar,
   SidebarContent,
@@ -69,11 +70,8 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-            D
-          </div>
-          <span className="text-lg font-bold tracking-tight">DUKA</span>
+        <Link href="/dashboard">
+          <DukaLogo size={22} />
         </Link>
       </SidebarHeader>
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DukaLogo } from "@/components/duka-logo";
 import {
   Package,
   ShoppingCart,
@@ -521,13 +522,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid gap-8 md:grid-cols-4">
             <div>
-              <div className="mb-3 flex items-center gap-2">
-                <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/15">
-                  <span className="font-mono text-xs font-bold text-primary">D</span>
-                </div>
-                <span className="font-mono text-sm font-bold text-zinc-100">
-                  DUKA
-                </span>
+              <div className="mb-3">
+                <DukaLogo size={20} />
               </div>
               <p className="text-sm text-zinc-500">
                 La gestion commerciale intelligente pour l&apos;Afrique francophone.
