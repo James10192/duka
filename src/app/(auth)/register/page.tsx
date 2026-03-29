@@ -37,7 +37,7 @@ export default function RegisterPage() {
   async function handlePhoneVerify() {
     setLoading(true);
     try {
-      await phoneAuth.verifyOtp({
+      await phoneAuth.verify({
         phoneNumber: phone,
         code: otp,
       });

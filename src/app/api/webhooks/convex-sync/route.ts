@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ConvexHttpClient } from "convex/browser";
-import { api } from "../../../../convex/_generated/api";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function POST(request: NextRequest) {
   try {
     const { type, data } = await request.json();
 
+    const mutation = (name: string, args: Record<string, any>) =>
+      convex.mutation(name as any, args as any);
+
     switch (type) {
       case "sale_created":
-        await convex.mutation(api.dashboardStats.upsert, {
+        await mutation("dashboardStats:upsert", {
           orgId: data.orgId,
           storeId: data.storeId,
           todayRevenue: data.todayRevenue,
@@ -23,7 +26,7 @@ export async function POST(request: NextRequest) {
         break;
 
       case "stock_alert":
-        await convex.mutation(api.stockAlerts.upsert, {
+        await mutation("stockAlerts:upsert", {
           orgId: data.orgId,
           storeId: data.storeId,
           productId: data.productId,
@@ -34,7 +37,7 @@ export async function POST(request: NextRequest) {
         break;
 
       case "activity":
-        await convex.mutation(api.activityFeed.create, {
+        await mutation("activityFeed:create", {
           orgId: data.orgId,
           userId: data.userId,
           userName: data.userName,

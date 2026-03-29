@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { phoneAuth, signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/dashboard";
@@ -35,7 +43,7 @@ export default function LoginPage() {
   async function handlePhoneVerify() {
     setLoading(true);
     try {
-      await phoneAuth.verifyOtp({
+      await phoneAuth.verify({
         phoneNumber: phone,
         code: otp,
       });

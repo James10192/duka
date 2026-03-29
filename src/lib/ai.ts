@@ -16,7 +16,7 @@ export async function generateAiContent(
 
   return {
     text,
-    tokensUsed: (usage?.promptTokens ?? 0) + (usage?.completionTokens ?? 0),
+    tokensUsed: (usage?.inputTokens ?? 0) + (usage?.outputTokens ?? 0),
   };
 }
 
