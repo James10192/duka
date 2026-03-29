@@ -27,6 +27,8 @@ import { AnimatedSection, StaggerContainer, StaggerItem } from "@/components/lan
 import { MetricCard } from "@/components/landing/metric-card";
 import { PulseLine } from "@/components/landing/pulse-line";
 import { POSTerminal } from "@/components/landing/pos-terminal";
+import { Suspense } from "react";
+import { ErrorToast } from "@/components/landing/error-toast";
 
 const starterFeatures = [
   "50 produits",
@@ -78,6 +80,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-zinc-950">
       <Navbar />
+      <Suspense>
+        <ErrorToast />
+      </Suspense>
 
       <main>
         {/* ───── Hero ───── */}

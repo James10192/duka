@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { phoneAuth, signIn } from "@/lib/auth-client";
@@ -30,6 +30,19 @@ function LoginForm() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Show toast for OAuth errors from redirect
+  useEffect(() => {
+    const err = searchParams.get("error");
+    if (err) {
+      const messages: Record<string, string> = {
+        unable_to_link_account: "Ce compte est deja lie a une autre methode de connexion. Essayez avec email ou un autre provider.",
+        invalid_callback_request: "Erreur de callback OAuth. Reessayez.",
+        state_not_found: "Session OAuth expiree. Reessayez.",
+      };
+      toast.error(messages[err] || `Erreur d'authentification: ${err}`);
+    }
+  }, [searchParams]);
 
   async function handlePhoneSendOtp() {
     setError("");
@@ -101,7 +114,7 @@ function LoginForm() {
         <div className="space-y-2.5">
           <button
             onClick={() =>
-              signIn.social({ provider: "google", callbackURL: redirect })
+              signIn.social({ provider: "google", callbackURL: redirect, errorCallbackURL: "/login" })
             }
             className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800/50"
           >
@@ -127,7 +140,7 @@ function LoginForm() {
           </button>
           <button
             onClick={() =>
-              signIn.social({ provider: "github", callbackURL: redirect })
+              signIn.social({ provider: "github", callbackURL: redirect, errorCallbackURL: "/login" })
             }
             className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800/50"
           >

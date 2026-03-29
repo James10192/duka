@@ -113,7 +113,7 @@ export default function RegisterPage() {
         <div className="space-y-2.5">
           <button
             onClick={() =>
-              signIn.social({ provider: "google", callbackURL: "/onboarding" })
+              signIn.social({ provider: "google", callbackURL: "/onboarding", errorCallbackURL: "/register" })
             }
             className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800/50"
           >
@@ -139,7 +139,7 @@ export default function RegisterPage() {
           </button>
           <button
             onClick={() =>
-              signIn.social({ provider: "github", callbackURL: "/onboarding" })
+              signIn.social({ provider: "github", callbackURL: "/onboarding", errorCallbackURL: "/register" })
             }
             className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800/50"
           >
