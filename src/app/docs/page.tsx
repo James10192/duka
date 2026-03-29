@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Navbar } from "@/components/landing/navbar";
 import {
   ArrowLeft,
   BookOpen,
@@ -50,43 +51,10 @@ function CodeBlock({ children }: { children: string }) {
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <header className="fixed top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
-        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Link
-            href="/"
-            className="text-xl font-bold tracking-tight text-foreground"
-          >
-            DUKA
-          </Link>
-          <div className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/#fonctionnalites"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Fonctionnalités
-            </Link>
-            <Link
-              href="/#tarifs"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Tarifs
-            </Link>
-            <Link
-              href="/docs"
-              className="text-sm font-medium text-foreground"
-            >
-              Docs
-            </Link>
-          </div>
-          <Button size="sm" asChild>
-            <Link href="/#tarifs">Commencer</Link>
-          </Button>
-        </nav>
-      </header>
+    <div className="min-h-screen bg-zinc-950">
+      <Navbar />
 
-      <main className="mx-auto max-w-3xl px-6 pt-32 pb-20">
+      <main className="mx-auto max-w-3xl px-6 pt-28 pb-20">
         {/* Back link */}
         <Link
           href="/"
