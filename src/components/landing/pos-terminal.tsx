@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
 interface SaleEntry {
@@ -42,33 +42,30 @@ function randomEntry(id: number): SaleEntry {
   };
 }
 
+let globalId = 0;
+
 export function POSTerminal() {
   const [entries, setEntries] = useState<SaleEntry[]>([]);
   const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState(0);
+  const initialized = useRef(false);
 
   useEffect(() => {
-    // Initial entries
+    if (initialized.current) return;
+    initialized.current = true;
+
     const initial: SaleEntry[] = [];
     for (let i = 0; i < 4; i++) {
-      initial.push(randomEntry(i));
+      initial.push(randomEntry(++globalId));
     }
     setEntries(initial);
     setTotal(initial.reduce((s, e) => s + e.price, 0));
-    setCounter(4);
-  }, []);
 
-  useEffect(() => {
     const interval = setInterval(() => {
-      setCounter((prev) => {
-        const newId = prev + 1;
-        const entry = randomEntry(newId);
-        setEntries((current) => {
-          const next = [...current, entry].slice(-6);
-          setTotal(next.reduce((s, e) => s + e.price, 0));
-          return next;
-        });
-        return newId;
+      const entry = randomEntry(++globalId);
+      setEntries((current) => {
+        const next = [...current, entry].slice(-6);
+        setTotal(next.reduce((s, e) => s + e.price, 0));
+        return next;
       });
     }, 2500);
     return () => clearInterval(interval);

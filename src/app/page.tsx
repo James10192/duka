@@ -415,93 +415,75 @@ export default function HomePage() {
             <StaggerContainer className="grid gap-4 md:grid-cols-3">
               {/* Starter */}
               <StaggerItem className="flex">
-                <Card className="flex h-full flex-col border-zinc-800/50 bg-zinc-900/20">
-                  <CardHeader className="p-5 pb-3">
-                    <p className="text-sm font-medium text-zinc-400">Starter</p>
-                    <div className="mt-2">
-                      <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
-                        0 FCFA
-                      </span>
-                      <span className="ml-1 text-xs text-zinc-500">Gratuit pour toujours</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-1 p-5 pt-2">
-                    <ul className="space-y-2">
-                      {starterFeatures.map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
-                          <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter className="p-5 pt-0">
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link href="/register">Commencer gratuitement</Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
+                <div className="flex w-full flex-col rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-5">
+                  <p className="text-sm font-medium text-zinc-400">Starter</p>
+                  <div className="mt-2 mb-5">
+                    <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
+                      0 FCFA
+                    </span>
+                    <span className="ml-1 text-xs text-zinc-500">Gratuit pour toujours</span>
+                  </div>
+                  <ul className="mb-5 flex-1 space-y-2">
+                    {starterFeatures.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
+                        <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href="/register">Commencer gratuitement</Link>
+                  </Button>
+                </div>
               </StaggerItem>
 
               {/* Pro — highlighted */}
               <StaggerItem className="flex">
-                <Card className="relative flex h-full flex-col border-primary/40 bg-zinc-900/60 shadow-lg shadow-primary/10 md:-my-2">
+                <div className="relative flex w-full flex-col rounded-2xl border border-primary/40 bg-zinc-900/60 p-5 shadow-lg shadow-primary/10">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <Badge className="bg-primary text-primary-foreground">Populaire</Badge>
                   </div>
-                  <CardHeader className="p-5 pb-3 pt-6">
-                    <p className="text-sm font-medium text-zinc-400">Pro</p>
-                    <div className="mt-2">
-                      <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
-                        9 900 FCFA/mois
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-1 p-5 pt-2">
-                    <ul className="space-y-2">
-                      {proFeatures.map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
-                          <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter className="p-5 pt-0">
-                    <Button className="w-full" asChild>
-                      <Link href="/register">Essai gratuit 14 jours</Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
+                  <p className="mt-2 text-sm font-medium text-zinc-400">Pro</p>
+                  <div className="mt-2 mb-5">
+                    <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
+                      9 900 FCFA/mois
+                    </span>
+                  </div>
+                  <ul className="mb-5 flex-1 space-y-2">
+                    {proFeatures.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
+                        <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button className="w-full" asChild>
+                    <Link href="/register">Essai gratuit 14 jours</Link>
+                  </Button>
+                </div>
               </StaggerItem>
 
               {/* Business */}
               <StaggerItem className="flex">
-                <Card className="flex h-full flex-col border-zinc-800/50 bg-zinc-900/20">
-                  <CardHeader className="p-5 pb-3">
-                    <p className="text-sm font-medium text-zinc-400">Business</p>
-                    <div className="mt-2">
-                      <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
-                        24 900 FCFA/mois
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-1 p-5 pt-2">
-                    <ul className="space-y-2">
-                      {businessFeatures.map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
-                          <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter className="p-5 pt-0">
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link href="/register">Essai gratuit 14 jours</Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
+                <div className="flex w-full flex-col rounded-2xl border border-zinc-800/50 bg-zinc-900/20 p-5">
+                  <p className="text-sm font-medium text-zinc-400">Business</p>
+                  <div className="mt-2 mb-5">
+                    <span className="whitespace-nowrap font-mono text-2xl font-bold text-zinc-100">
+                      24 900 FCFA/mois
+                    </span>
+                  </div>
+                  <ul className="mb-5 flex-1 space-y-2">
+                    {businessFeatures.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-zinc-400">
+                        <Check className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href="/register">Essai gratuit 14 jours</Link>
+                  </Button>
+                </div>
               </StaggerItem>
             </StaggerContainer>
 
