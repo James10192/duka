@@ -367,13 +367,13 @@ export default function HomePage() {
 
             <StaggerContainer className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {plans.map((plan) => (
-                <StaggerItem key={plan.name}>
+                <StaggerItem key={plan.name} className="flex">
                   <Card
-                    className={
+                    className={`flex h-full flex-col ${
                       plan.highlighted
                         ? "relative border-primary/40 bg-zinc-900/60"
                         : "border-zinc-800/50 bg-zinc-900/20"
-                    }
+                    }`}
                   >
                     {plan.highlighted && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -403,7 +403,7 @@ export default function HomePage() {
                         )}
                       </div>
                     </CardHeader>
-                    <CardContent className="pb-4">
+                    <CardContent className="flex-1 pb-4">
                       <ul className="space-y-2.5">
                         {plan.features.map((feature) => (
                           <li
