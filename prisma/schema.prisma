@@ -1,0 +1,434 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTH — Better Auth managed tables
+// ═══════════════════════════════════════════════════════════
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  phone         String?   @unique
+  name          String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+  members  Member[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id           String    @id @default(cuid())
+  userId       String
+  accountId    String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  password     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+// ═══════════════════════════════════════════════════════════
+// MULTI-TENANT — Organizations, Members, Stores
+// ═══════════════════════════════════════════════════════════
+
+model Organization {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  logo            String?
+  currency        String    @default("XOF")
+  taxRate         Float     @default(18)
+  sector          String?
+  city            String?
+  address         String?
+  phone           String?
+  email           String?
+  settings        Json?
+  plan            Plan      @default(STARTER)
+  subscriptionEnd DateTime?
+  onboardingDone  Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  members         Member[]
+  stores          Store[]
+  products        Product[]
+  clients         Client[]
+  sales           Sale[]
+  cashEntries     CashEntry[]
+  invoices        Invoice[]
+  invoiceCounters InvoiceCounter[]
+  aiGenerations   AiGeneration[]
+
+  @@map("organizations")
+}
+
+model Member {
+  id          String   @id @default(cuid())
+  orgId       String
+  userId      String
+  role        OrgRole  @default(CASHIER)
+  storeAccess String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, userId])
+  @@index([orgId])
+  @@index([userId])
+  @@map("members")
+}
+
+model Store {
+  id        String   @id @default(cuid())
+  orgId     String
+  name      String
+  address   String?
+  phone     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  products       Product[]
+  sales          Sale[]
+  cashEntries    CashEntry[]
+  stockMovements StockMovement[]
+
+  @@index([orgId])
+  @@map("stores")
+}
+
+// ═══════════════════════════════════════════════════════════
+// PRODUCTS & STOCK
+// ═══════════════════════════════════════════════════════════
+
+model Product {
+  id        String   @id @default(cuid())
+  orgId     String
+  storeId   String
+  ref       String
+  name      String
+  category  String?
+  format    String?
+  buyPrice  Float
+  sellPrice Float
+  stock     Int      @default(0)
+  minStock  Int      @default(5)
+  imageUrl  String?
+  barcode   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization   Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  store          Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  saleItems      SaleItem[]
+  stockMovements StockMovement[]
+
+  @@index([orgId])
+  @@index([storeId])
+  @@index([barcode])
+  @@index([orgId, category])
+  @@map("products")
+}
+
+model StockMovement {
+  id        String       @id @default(cuid())
+  orgId     String
+  storeId   String
+  productId String
+  type      MovementType
+  quantity  Int
+  reason    String?
+  userId    String
+  date      DateTime     @default(now())
+
+  store   Store   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([storeId, date])
+  @@map("stock_movements")
+}
+
+// ═══════════════════════════════════════════════════════════
+// CLIENTS (CRM)
+// ═══════════════════════════════════════════════════════════
+
+model Client {
+  id             String     @id @default(cuid())
+  orgId          String
+  name           String
+  phone          String?
+  whatsapp       String?
+  email          String?
+  area           String?
+  type           ClientType @default(PARTICULIER)
+  tags           String[]   @default([])
+  notes          String?
+  totalPurchases Int        @default(0)
+  totalSpent     Float      @default(0)
+  lastPurchaseAt DateTime?
+  birthday       DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  sales        Sale[]
+
+  @@index([orgId])
+  @@index([orgId, phone])
+  @@map("clients")
+}
+
+// ═══════════════════════════════════════════════════════════
+// SALES & POS
+// ═══════════════════════════════════════════════════════════
+
+model Sale {
+  id            String        @id @default(cuid())
+  orgId         String
+  storeId       String
+  clientId      String?
+  userId        String
+  total         Float
+  taxAmount     Float         @default(0)
+  discount      Float         @default(0)
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+  depositAmount Float         @default(0)
+  invoiceNumber String        @unique
+  date          DateTime      @default(now())
+  notes         String?
+  createdAt     DateTime      @default(now())
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  store        Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  client       Client?      @relation(fields: [clientId], references: [id])
+  items        SaleItem[]
+  invoice      Invoice?
+  cashEntries  CashEntry[]
+
+  @@index([orgId])
+  @@index([storeId, date])
+  @@index([clientId])
+  @@map("sales")
+}
+
+model SaleItem {
+  id        String @id @default(cuid())
+  saleId    String
+  productId String
+  quantity  Int
+  unitPrice Float
+  total     Float
+
+  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([saleId])
+  @@map("sale_items")
+}
+
+// ═══════════════════════════════════════════════════════════
+// INVOICES (OHADA compliant)
+// ═══════════════════════════════════════════════════════════
+
+model Invoice {
+  id        String        @id @default(cuid())
+  orgId     String
+  saleId    String        @unique
+  number    String
+  pdfUrl    String?
+  sentAt    DateTime?
+  sentVia   SendChannel?
+  status    InvoiceStatus @default(DRAFT)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  sale         Sale         @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([orgId, number])
+  @@map("invoices")
+}
+
+model InvoiceCounter {
+  id         String @id @default(cuid())
+  orgId      String
+  fiscalYear Int
+  lastNumber Int    @default(0)
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, fiscalYear])
+  @@map("invoice_counters")
+}
+
+// ═══════════════════════════════════════════════════════════
+// CASH JOURNAL (append-only, OHADA compliant)
+// ═══════════════════════════════════════════════════════════
+
+model CashEntry {
+  id            String        @id @default(cuid())
+  orgId         String
+  storeId       String
+  type          CashType
+  amount        Float
+  label         String
+  method        PaymentMethod
+  relatedSaleId String?
+  userId        String
+  date          DateTime      @default(now())
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  store        Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  relatedSale  Sale?        @relation(fields: [relatedSaleId], references: [id])
+
+  @@index([storeId, date])
+  @@index([orgId])
+  @@map("cash_entries")
+}
+
+// ═══════════════════════════════════════════════════════════
+// AI GENERATIONS
+// ═══════════════════════════════════════════════════════════
+
+model AiGeneration {
+  id         String   @id @default(cuid())
+  orgId      String
+  type       AiType
+  prompt     String
+  result     String
+  model      String   @default("claude-sonnet-4-6")
+  tokensUsed Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([orgId, type])
+  @@map("ai_generations")
+}
+
+// ═══════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════
+
+enum Plan {
+  STARTER
+  PRO
+  BUSINESS
+  ENTERPRISE
+}
+
+enum OrgRole {
+  OWNER
+  MANAGER
+  CASHIER
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  LOSS
+}
+
+enum ClientType {
+  PARTICULIER
+  ENTREPRISE
+  EVENEMENTIEL
+  REVENDEUR
+  VIP
+}
+
+enum PaymentMethod {
+  CASH
+  MOBILE_MONEY
+  CARD
+  MIXED
+}
+
+enum PaymentStatus {
+  PAID
+  PARTIAL
+  PENDING
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+}
+
+enum SendChannel {
+  WHATSAPP
+  EMAIL
+  SMS
+}
+
+enum CashType {
+  IN
+  OUT
+}
+
+enum AiType {
+  ACTION_PLAN
+  ENCAISSEMENT
+  STRATEGY
+  ANALYSIS
+  MESSAGE
+  DESCRIPTION
+  FORECAST
+}
