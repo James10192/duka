@@ -9,6 +9,8 @@ const publicPaths = [
   "/docs",
 ];
 
+const authPages = ["/login", "/register"];
+
 function isPublicPath(pathname: string) {
   return publicPaths.some(
     (p) => pathname === p || pathname.startsWith(p + "/"),
@@ -18,13 +20,25 @@ function isPublicPath(pathname: string) {
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (isPublicPath(pathname) || pathname.startsWith("/_next")) {
+  if (pathname.startsWith("/_next") || pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }
 
   const sessionCookie = request.cookies.get("better-auth.session_token");
+  const isLoggedIn = !!sessionCookie?.value;
 
-  if (!sessionCookie?.value) {
+  // Redirect logged-in users away from auth pages
+  if (isLoggedIn && authPages.includes(pathname)) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  // Allow public paths
+  if (isPublicPath(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Protect private routes
+  if (!isLoggedIn) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);

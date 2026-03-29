@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, BookOpen } from "lucide-react";
+import { Menu, X, BookOpen, User, LogOut, LayoutDashboard, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DukaLogo } from "@/components/duka-logo";
+import { useSession, signOut } from "@/lib/auth-client";
 
 const navLinks = [
   { label: "Fonctionnalites", href: "#fonctionnalites" },
@@ -14,6 +16,16 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const router = useRouter();
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
+
+  async function handleSignOut() {
+    await signOut();
+    setUserMenuOpen(false);
+    router.push("/");
+  }
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-zinc-800/50 bg-zinc-950/80 backdrop-blur-md">
@@ -57,12 +69,84 @@ export function Navbar() {
             </svg>
           </a>
           <div className="mx-1 h-5 w-px bg-zinc-800" />
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/login">Connexion</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link href="/register">Demarrer</Link>
-          </Button>
+
+          {isLoggedIn ? (
+            <div className="relative">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm text-zinc-300 transition-colors hover:bg-zinc-800/50"
+              >
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-xs font-medium text-primary">
+                  {session.user.name?.[0]?.toUpperCase() || session.user.email?.[0]?.toUpperCase() || "U"}
+                </div>
+                <span className="max-w-[120px] truncate">
+                  {session.user.name || session.user.email}
+                </span>
+                <ChevronDown className="size-3.5 text-zinc-500" />
+              </button>
+
+              <AnimatePresence>
+                {userMenuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setUserMenuOpen(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-full z-50 mt-2 w-52 rounded-lg border border-zinc-800 bg-zinc-900 py-1 shadow-xl"
+                    >
+                      <div className="border-b border-zinc-800 px-3 py-2">
+                        <p className="text-sm font-medium text-zinc-200 truncate">
+                          {session.user.name}
+                        </p>
+                        <p className="text-xs text-zinc-500 truncate">
+                          {session.user.email}
+                        </p>
+                      </div>
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+                      >
+                        <LayoutDashboard className="size-4" />
+                        Tableau de bord
+                      </Link>
+                      <Link
+                        href="/dashboard/parametres"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+                      >
+                        <User className="size-4" />
+                        Mon compte
+                      </Link>
+                      <div className="border-t border-zinc-800">
+                        <button
+                          onClick={handleSignOut}
+                          className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-400 transition-colors hover:bg-zinc-800 hover:text-red-300"
+                        >
+                          <LogOut className="size-4" />
+                          Deconnexion
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/login">Connexion</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/register">Demarrer</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -103,16 +187,36 @@ export function Navbar() {
                 Documentation
               </Link>
               <div className="flex gap-3 pt-3">
-                <Button variant="ghost" size="sm" className="flex-1" asChild>
-                  <Link href="/login" onClick={() => setOpen(false)}>
-                    Connexion
-                  </Link>
-                </Button>
-                <Button size="sm" className="flex-1" asChild>
-                  <Link href="/register" onClick={() => setOpen(false)}>
-                    Demarrer
-                  </Link>
-                </Button>
+                {isLoggedIn ? (
+                  <>
+                    <Button size="sm" className="flex-1" asChild>
+                      <Link href="/dashboard" onClick={() => setOpen(false)}>
+                        Tableau de bord
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => { handleSignOut(); setOpen(false); }}
+                    >
+                      Deconnexion
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" size="sm" className="flex-1" asChild>
+                      <Link href="/login" onClick={() => setOpen(false)}>
+                        Connexion
+                      </Link>
+                    </Button>
+                    <Button size="sm" className="flex-1" asChild>
+                      <Link href="/register" onClick={() => setOpen(false)}>
+                        Demarrer
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
