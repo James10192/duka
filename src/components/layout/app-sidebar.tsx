@@ -13,6 +13,7 @@ import {
   Settings,
 } from "lucide-react";
 import { DukaLogo } from "@/components/duka-logo";
+import { useSession } from "@/lib/auth-client";
 import {
   Sidebar,
   SidebarContent,
@@ -66,6 +67,12 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  const userInitial =
+    session?.user?.name?.[0]?.toUpperCase() ||
+    session?.user?.email?.[0]?.toUpperCase() ||
+    "U";
 
   return (
     <Sidebar>
@@ -103,6 +110,28 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
+        {/* User section */}
+        <div className="flex items-center gap-3 px-3 py-2">
+          {session?.user?.image ? (
+            <img
+              src={session.user.image}
+              alt={session.user.name || "Avatar"}
+              className="h-8 w-8 shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+              {userInitial}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-zinc-200">
+              {session?.user?.name || "Utilisateur"}
+            </p>
+            <p className="truncate text-xs text-zinc-500">Proprietaire</p>
+          </div>
+        </div>
+
+        {/* Settings */}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
