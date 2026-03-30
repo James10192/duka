@@ -8,8 +8,6 @@ import {
   Building2,
   Link2,
   ChevronRight,
-  Sun,
-  Moon,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,7 +16,6 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useSession, signIn } from "@/lib/auth-client";
-import { useTheme } from "next-themes";
 
 function getInitials(name: string | undefined | null): string {
   if (!name) return "?";
@@ -64,13 +61,6 @@ function GitHubIcon({ className }: { className?: string }) {
 export default function SettingsPage() {
   const { data: session } = useSession();
   const user = session?.user;
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  const isDark = mounted ? resolvedTheme === "dark" : true;
-
   const [accounts, setAccounts] = useState<
     { providerId: string; accountId: string }[]
   >([]);
@@ -267,67 +257,6 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </section>
-
-      {/* Theme Toggle — right after linked accounts */}
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
-          {isDark ? (
-            <Moon className="h-5 w-5 text-zinc-400" />
-          ) : (
-            <Sun className="h-5 w-5 text-amber-400" />
-          )}
-          Apparence
-        </h2>
-        <Card className="bg-zinc-950 border-zinc-800 rounded-xl">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-800">
-                  {isDark ? (
-                    <Moon className="h-4 w-4 text-zinc-300" />
-                  ) : (
-                    <Sun className="h-4 w-4 text-amber-400" />
-                  )}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-zinc-100">
-                    {isDark ? "Mode sombre" : "Mode clair"}
-                  </p>
-                  <p className="text-xs text-zinc-500">
-                    Basculer entre le theme clair et sombre
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-1 rounded-lg bg-zinc-900 p-1">
-                <button
-                  onClick={() => setTheme("light")}
-                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                    !isDark
-                      ? "bg-zinc-800 text-zinc-100 shadow-sm"
-                      : "text-zinc-500 hover:text-zinc-300"
-                  }`}
-                >
-                  <Sun className="h-3.5 w-3.5" />
-                  Clair
-                </button>
-                <button
-                  onClick={() => setTheme("dark")}
-                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                    isDark
-                      ? "bg-zinc-800 text-zinc-100 shadow-sm"
-                      : "text-zinc-500 hover:text-zinc-300"
-                  }`}
-                >
-                  <Moon className="h-3.5 w-3.5" />
-                  Sombre
-                </button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <Separator className="border-zinc-800" />
 
       {/* Organization Section */}
       <section className="space-y-4">

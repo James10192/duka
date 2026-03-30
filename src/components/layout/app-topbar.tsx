@@ -3,18 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { Bell, Settings, LogOut, ChevronDown, Sun, Moon } from "lucide-react";
+import { Bell, Settings, LogOut, ChevronDown } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "@/lib/auth-client";
-import { useTheme } from "next-themes";
 
 export function AppTopbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { data: session } = useSession();
-  const { theme, setTheme } = useTheme();
 
   const unreadCount = 0;
 
@@ -78,19 +76,6 @@ export function AppTopbar() {
           )}
         </AnimatePresence>
       </div>
-
-      {/* Theme toggle */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      >
-        {theme === "dark" ? (
-          <Sun className="h-4 w-4" />
-        ) : (
-          <Moon className="h-4 w-4" />
-        )}
-      </Button>
 
       {/* User profile dropdown */}
       <div className="relative">
