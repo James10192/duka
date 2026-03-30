@@ -17,7 +17,12 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
 export default async function DashboardPage() {
-  const orgs = await getUserOrganizations();
+  let orgs;
+  try {
+    orgs = await getUserOrganizations();
+  } catch {
+    redirect("/login");
+  }
   const org = orgs[0];
   if (!org) redirect("/onboarding");
   const store = org.stores[0];
