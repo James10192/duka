@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SECTORS } from "@/lib/constants";
 import { toast } from "sonner";
+import { createProduct } from "@/actions/products";
+import { getUserOrganizations } from "@/actions/organizations";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -29,12 +31,37 @@ export default function NewProductPage() {
     };
 
     try {
-      // TODO: Server action to create product
-      console.log("Creating product:", data);
-      toast.success("Produit créé avec succès");
+      // Get user's org and store
+      const orgs = await getUserOrganizations();
+      if (!orgs.length) {
+        toast.error("Completez l'onboarding d'abord");
+        router.push("/onboarding");
+        return;
+      }
+      const org = orgs[0];
+      const store = org.stores[0];
+      if (!store) {
+        toast.error("Aucune boutique trouvee");
+        return;
+      }
+
+      await createProduct({
+        orgId: org.id,
+        storeId: store.id,
+        name: data.name,
+        category: data.category || undefined,
+        format: data.format || undefined,
+        buyPrice: data.buyPrice || 0,
+        sellPrice: data.sellPrice,
+        stock: data.stock,
+        minStock: data.minStock,
+      });
+
+      toast.success("Produit cree avec succes");
       router.push("/dashboard/produits");
-    } catch {
-      toast.error("Erreur lors de la création");
+    } catch (err) {
+      console.error("Create product failed:", err);
+      toast.error("Erreur lors de la creation");
     } finally {
       setLoading(false);
     }

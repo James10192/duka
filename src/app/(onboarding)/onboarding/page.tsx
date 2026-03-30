@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SECTORS, CITIES_CI } from "@/lib/constants";
 import { toast } from "sonner";
+import { completeOnboarding } from "@/actions/onboarding";
 
 const STEPS = [
   { title: "Mon commerce", icon: Store },
@@ -51,13 +52,33 @@ export default function OnboardingPage() {
   }
 
   async function finishOnboarding() {
+    if (!data.orgName.trim()) {
+      toast.error("Entrez le nom de votre commerce");
+      return;
+    }
     setLoading(true);
     try {
-      // TODO: Create org, store, products via server actions
-      toast.success("Votre commerce est prêt !");
+      const validProducts = data.products
+        .filter((p) => p.name.trim())
+        .map((p) => ({
+          name: p.name.trim(),
+          sellPrice: parseFloat(p.sellPrice) || 0,
+          stock: parseInt(p.stock, 10) || 0,
+        }));
+
+      await completeOnboarding({
+        orgName: data.orgName.trim(),
+        sector: data.sector || undefined,
+        city: data.city || undefined,
+        products: validProducts,
+        phone: data.phone || undefined,
+      });
+
+      toast.success("Votre commerce est pret !");
       router.push("/dashboard");
-    } catch {
-      toast.error("Erreur lors de la configuration");
+    } catch (err) {
+      console.error("Onboarding failed:", err);
+      toast.error("Erreur lors de la configuration. Reessayez.");
     } finally {
       setLoading(false);
     }
