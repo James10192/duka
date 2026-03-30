@@ -15,18 +15,44 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DUKA — Gestion commerciale intelligente",
+  title: {
+    default: "DUKA — Gestion commerciale intelligente pour l'Afrique",
+    template: "%s | DUKA",
+  },
   description:
-    "La plateforme de gestion commerciale conçue pour les commerces en Afrique francophone. Stock, ventes, factures, CRM et IA.",
+    "La plateforme de gestion commerciale concue pour les commerces en Afrique francophone. Stock, ventes, factures OHADA, CRM, IA generative et Mobile Money.",
   keywords: [
     "gestion commerciale",
     "Afrique",
-    "Côte d'Ivoire",
-    "factures",
+    "Cote d'Ivoire",
+    "factures OHADA",
     "stock",
     "Mobile Money",
-    "OHADA",
+    "point de vente",
+    "CRM",
+    "SaaS",
+    "IA",
   ],
+  metadataBase: new URL("https://duka-rho.vercel.app"),
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    url: "https://duka-rho.vercel.app",
+    siteName: "DUKA",
+    title: "DUKA — Gestion commerciale intelligente pour l'Afrique",
+    description:
+      "Stock, ventes, factures OHADA, CRM, IA generative et Mobile Money. Le tout-en-un pour les commercants africains.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DUKA — Gestion commerciale intelligente",
+    description:
+      "Stock, ventes, factures OHADA, CRM, IA et Mobile Money pour l'Afrique francophone.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
