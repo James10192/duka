@@ -1,23 +1,22 @@
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
   Package,
   Pencil,
-  Trash2,
   ImageIcon,
   TrendingUp,
   BarChart3,
   AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { getProduct } from "@/actions/products";
+import { formatCFA } from "@/lib/utils";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 export default async function ProductDetailPage({
   params,
@@ -26,21 +25,12 @@ export default async function ProductDetailPage({
 }) {
   const { id } = await params;
 
-  // Shell data — will be replaced by DB fetch
-  const product = {
-    id,
-    name: "Produit exemple",
-    ref: "PRD-001",
-    category: "Boissons",
-    format: "Bouteille 33cl",
-    barcode: "6001234567890",
-    active: true,
-    buyPrice: 450,
-    sellPrice: 600,
-    stock: 24,
-    minStock: 10,
-    imageUrl: null as string | null,
-  };
+  let product;
+  try {
+    product = await getProduct(id);
+  } catch {
+    notFound();
+  }
 
   const margin = product.sellPrice - product.buyPrice;
   const marginPercent =
@@ -48,6 +38,20 @@ export default async function ProductDetailPage({
       ? ((margin / product.buyPrice) * 100).toFixed(1)
       : "0";
   const valorization = product.stock * product.buyPrice;
+
+  const movementTypeLabel: Record<string, string> = {
+    IN: "Entree",
+    OUT: "Sortie",
+    ADJUSTMENT: "Ajustement",
+    LOSS: "Perte",
+  };
+
+  const movementTypeColor: Record<string, string> = {
+    IN: "text-emerald-500",
+    OUT: "text-red-500",
+    ADJUSTMENT: "text-amber-500",
+    LOSS: "text-red-500",
+  };
 
   return (
     <div className="space-y-6">
@@ -66,11 +70,11 @@ export default async function ProductDetailPage({
             <Badge variant="outline" className="font-mono text-xs">
               {product.ref}
             </Badge>
-            <Badge variant="secondary">{product.category}</Badge>
-            <Badge
-              variant={product.active ? "default" : "destructive"}
-            >
-              {product.active ? "Actif" : "Inactif"}
+            {product.category && (
+              <Badge variant="secondary">{product.category}</Badge>
+            )}
+            <Badge variant={product.isActive ? "default" : "destructive"}>
+              {product.isActive ? "Actif" : "Inactif"}
             </Badge>
           </div>
           <p className="text-muted-foreground">
@@ -82,10 +86,6 @@ export default async function ProductDetailPage({
             <Pencil className="mr-2 h-4 w-4" />
             Modifier
           </Button>
-          <Button variant="destructive">
-            <Trash2 className="mr-2 h-4 w-4" />
-            Supprimer
-          </Button>
         </div>
       </div>
 
@@ -95,15 +95,23 @@ export default async function ProductDetailPage({
       <div className="grid gap-6 md:grid-cols-2">
         {/* Left column */}
         <div className="space-y-6">
-          {/* Product image placeholder */}
+          {/* Product image */}
           <Card>
             <CardContent className="pt-6">
-              <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-border">
-                <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                  <ImageIcon className="h-10 w-10" />
-                  <span className="text-sm">Aucune image</span>
+              {product.imageUrl ? (
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="h-48 w-full rounded-lg object-cover"
+                />
+              ) : (
+                <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-border">
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    <ImageIcon className="h-10 w-10" />
+                    <span className="text-sm">Aucune image</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -124,17 +132,22 @@ export default async function ProductDetailPage({
                 <Separator />
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Categorie</dt>
-                  <dd className="font-medium">{product.category}</dd>
+                  <dd className="font-medium">{product.category ?? "-"}</dd>
                 </div>
                 <Separator />
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Format</dt>
-                  <dd className="font-medium">{product.format}</dd>
+                  <dd className="font-medium">{product.format ?? "-"}</dd>
                 </div>
                 <Separator />
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Code-barres</dt>
-                  <dd className="font-mono font-medium">{product.barcode}</dd>
+                  <dd className="font-mono font-medium">{product.barcode ?? "-"}</dd>
+                </div>
+                <Separator />
+                <div className="flex justify-between">
+                  <dt className="text-muted-foreground">Boutique</dt>
+                  <dd className="font-medium">{product.store.name}</dd>
                 </div>
               </dl>
             </CardContent>
@@ -143,7 +156,7 @@ export default async function ProductDetailPage({
 
         {/* Right column */}
         <div className="space-y-6">
-          {/* Pricing card */}
+          {/* Pricing */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
@@ -156,28 +169,28 @@ export default async function ProductDetailPage({
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Prix d&apos;achat</dt>
                   <dd className="font-mono font-medium">
-                    {product.buyPrice.toLocaleString("fr-FR")} FCFA
+                    {formatCFA(product.buyPrice)}
                   </dd>
                 </div>
                 <Separator />
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Prix de vente</dt>
                   <dd className="font-mono font-medium text-primary">
-                    {product.sellPrice.toLocaleString("fr-FR")} FCFA
+                    {formatCFA(product.sellPrice)}
                   </dd>
                 </div>
                 <Separator />
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Marge</dt>
                   <dd className="font-mono font-medium text-emerald-500">
-                    +{margin.toLocaleString("fr-FR")} FCFA ({marginPercent}%)
+                    +{formatCFA(margin)} ({marginPercent}%)
                   </dd>
                 </div>
               </dl>
             </CardContent>
           </Card>
 
-          {/* Stock card */}
+          {/* Stock */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-base">
@@ -192,11 +205,11 @@ export default async function ProductDetailPage({
                   <dd className="flex items-center gap-2">
                     <span
                       className={`font-mono text-lg font-bold ${
-                        product.stock <= product.minStock
-                          ? "text-red-500"
-                          : product.stock <= product.minStock * 2
+                        product.stock > product.minStock
+                          ? "text-emerald-500"
+                          : product.stock === product.minStock
                             ? "text-amber-500"
-                            : "text-emerald-500"
+                            : "text-red-500"
                       }`}
                     >
                       {product.stock}
@@ -215,7 +228,7 @@ export default async function ProductDetailPage({
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Valorisation stock</dt>
                   <dd className="font-mono font-medium">
-                    {valorization.toLocaleString("fr-FR")} FCFA
+                    {formatCFA(valorization)}
                   </dd>
                 </div>
               </dl>
@@ -236,20 +249,43 @@ export default async function ProductDetailPage({
                 <tr className="border-b border-border text-left text-muted-foreground">
                   <th className="px-4 py-3 font-medium">Date</th>
                   <th className="px-4 py-3 font-medium">Type</th>
-                  <th className="px-4 py-3 font-medium">Quantite</th>
-                  <th className="px-4 py-3 font-medium">Reference</th>
-                  <th className="px-4 py-3 font-medium">Note</th>
+                  <th className="px-4 py-3 text-right font-medium">Quantite</th>
+                  <th className="px-4 py-3 font-medium">Motif</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-12 text-center text-muted-foreground"
-                  >
-                    Aucun mouvement de stock
-                  </td>
-                </tr>
+                {product.stockMovements.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-4 py-12 text-center text-muted-foreground"
+                    >
+                      Aucun mouvement de stock
+                    </td>
+                  </tr>
+                ) : (
+                  product.stockMovements.map((mv) => (
+                    <tr
+                      key={mv.id}
+                      className="border-b border-border last:border-0"
+                    >
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {format(new Date(mv.date), "dd/MM/yyyy HH:mm", { locale: fr })}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`font-medium ${movementTypeColor[mv.type] ?? ""}`}>
+                          {movementTypeLabel[mv.type] ?? mv.type}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono font-medium">
+                        {mv.type === "IN" ? "+" : "-"}{mv.quantity}
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">
+                        {mv.reason ?? "-"}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
