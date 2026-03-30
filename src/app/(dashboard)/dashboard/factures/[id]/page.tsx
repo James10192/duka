@@ -139,7 +139,7 @@ export default async function InvoiceDetailPage({
             <CardTitle className="text-base">Apercu PDF</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-zinc-800 bg-zinc-950/50">
+            <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted">
               <div className="flex flex-col items-center gap-3 text-muted-foreground">
                 <FileText className="h-12 w-12" />
                 <span className="text-sm">Apercu du document</span>
@@ -159,10 +159,10 @@ export default async function InvoiceDetailPage({
           <CardTitle className="text-base">Articles</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg border border-zinc-800">
+          <div className="rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 text-left text-muted-foreground">
+                <tr className="border-b border-border text-left text-muted-foreground">
                   <th className="px-4 py-3 font-medium">Produit</th>
                   <th className="px-4 py-3 text-right font-medium">Quantite</th>
                   <th className="px-4 py-3 text-right font-medium">
@@ -176,7 +176,7 @@ export default async function InvoiceDetailPage({
                   invoice.items.map((item, i) => (
                     <tr
                       key={i}
-                      className="border-b border-zinc-800 last:border-0"
+                      className="border-b border-border last:border-0"
                     >
                       <td className="px-4 py-3">{item.product}</td>
                       <td className="px-4 py-3 text-right font-mono">

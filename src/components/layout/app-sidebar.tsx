@@ -128,10 +128,10 @@ export function AppSidebar() {
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-zinc-200">
+            <p className="truncate text-sm font-medium text-foreground">
               {session?.user?.name || "Utilisateur"}
             </p>
-            <p className="truncate text-xs text-zinc-500">Proprietaire</p>
+            <p className="truncate text-xs text-muted-foreground">Proprietaire</p>
           </div>
         </div>
 

@@ -33,8 +33,8 @@ const roles = [
   {
     name: "Caissier",
     icon: Shield,
-    color: "text-zinc-400",
-    bgColor: "bg-zinc-400/10",
+    color: "text-muted-foreground",
+    bgColor: "bg-muted-foreground/10",
     description:
       "Acces au point de vente et a l'enregistrement des ventes uniquement. Pas de modification des stocks.",
   },
@@ -47,24 +47,24 @@ export default function EquipePage() {
     <div className="max-w-2xl mx-auto space-y-8 pb-10">
       {/* Breadcrumb + Title */}
       <div>
-        <div className="flex items-center gap-1.5 text-sm text-zinc-500 mb-2">
+        <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
           <Link
             href="/dashboard/parametres"
-            className="hover:text-zinc-300 transition-colors inline-flex items-center gap-1"
+            className="hover:text-foreground transition-colors inline-flex items-center gap-1"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Parametres
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-zinc-100">Equipe</span>
+          <span className="text-foreground">Equipe</span>
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
               <Users className="h-6 w-6 text-primary" />
               Equipe
             </h1>
-            <p className="text-zinc-500 mt-1">
+            <p className="text-muted-foreground mt-1">
               Gerez les membres de votre equipe et leurs acces
             </p>
           </div>
@@ -76,16 +76,16 @@ export default function EquipePage() {
       </div>
 
       {/* Members Table / Empty State */}
-      <Card className="bg-zinc-950 border-zinc-800">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="text-base text-zinc-100">Membres</CardTitle>
+          <CardTitle className="text-base text-foreground">Membres</CardTitle>
         </CardHeader>
         <CardContent>
           {hasMembers ? (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-800 text-left text-zinc-500">
+                  <tr className="border-b border-border text-left text-muted-foreground">
                     <th className="pb-3 font-medium">Nom</th>
                     <th className="pb-3 font-medium">Email</th>
                     <th className="pb-3 font-medium">Role</th>
@@ -100,13 +100,13 @@ export default function EquipePage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-zinc-800/50 mb-4">
-                <Users className="h-7 w-7 text-zinc-500" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-4">
+                <Users className="h-7 w-7 text-muted-foreground" />
               </div>
-              <h3 className="text-base font-medium text-zinc-100 mb-1">
+              <h3 className="text-base font-medium text-foreground mb-1">
                 Vous etes le seul membre
               </h3>
-              <p className="text-sm text-zinc-500 max-w-xs mb-6">
+              <p className="text-sm text-muted-foreground max-w-xs mb-6">
                 Invitez des gerants ou caissiers pour collaborer sur votre commerce
               </p>
               <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
@@ -118,19 +118,19 @@ export default function EquipePage() {
         </CardContent>
       </Card>
 
-      <Separator className="bg-zinc-800" />
+      <Separator className="bg-border" />
 
       {/* Role Descriptions */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-zinc-100">
+        <h2 className="text-lg font-semibold text-foreground">
           Roles & Permissions
         </h2>
-        <Card className="bg-zinc-950 border-zinc-800">
+        <Card className="bg-card border-border">
           <CardContent className="pt-6 space-y-4">
             {roles.map((role) => (
               <div
                 key={role.name}
-                className="flex items-start gap-3 rounded-lg border border-zinc-800 p-4"
+                className="flex items-start gap-3 rounded-lg border border-border p-4"
               >
                 <div
                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md ${role.bgColor}`}
@@ -139,19 +139,19 @@ export default function EquipePage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-zinc-100">
+                    <p className="text-sm font-medium text-foreground">
                       {role.name}
                     </p>
                     <Badge
                       variant="outline"
-                      className="border-zinc-700 text-zinc-400 text-[10px]"
+                      className="border-border text-muted-foreground text-[10px]"
                     >
                       {role.name === "Proprietaire"
                         ? "1 par organisation"
                         : "Illimite"}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {role.description}
                   </p>
                 </div>

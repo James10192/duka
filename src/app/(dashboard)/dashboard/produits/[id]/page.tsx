@@ -98,7 +98,7 @@ export default async function ProductDetailPage({
           {/* Product image placeholder */}
           <Card>
             <CardContent className="pt-6">
-              <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-zinc-800">
+              <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-border">
                 <div className="flex flex-col items-center gap-2 text-muted-foreground">
                   <ImageIcon className="h-10 w-10" />
                   <span className="text-sm">Aucune image</span>
@@ -230,10 +230,10 @@ export default async function ProductDetailPage({
           <CardTitle className="text-base">Mouvements de stock</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg border border-zinc-800">
+          <div className="rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-800 text-left text-muted-foreground">
+                <tr className="border-b border-border text-left text-muted-foreground">
                   <th className="px-4 py-3 font-medium">Date</th>
                   <th className="px-4 py-3 font-medium">Type</th>
                   <th className="px-4 py-3 font-medium">Quantite</th>

@@ -8,7 +8,12 @@ import {
   Building2,
   Link2,
   ChevronRight,
+  Sun,
+  Moon,
+  Monitor,
+  Palette,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -61,9 +66,13 @@ function GitHubIcon({ className }: { className?: string }) {
 export default function SettingsPage() {
   const { data: session } = useSession();
   const user = session?.user;
+  const { resolvedTheme, theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [accounts, setAccounts] = useState<
     { providerId: string; accountId: string }[]
   >([]);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     fetch("/api/auth/list-accounts", { credentials: "include" })
@@ -74,34 +83,35 @@ export default function SettingsPage() {
 
   const isGoogleLinked = accounts.some((a) => a.providerId === "google");
   const isGitHubLinked = accounts.some((a) => a.providerId === "github");
+  const currentTheme = mounted ? theme : "dark";
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 pb-10">
       {/* Breadcrumb + Title */}
       <div>
-        <div className="flex items-center gap-1.5 text-sm text-zinc-500 mb-2">
+        <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
           <Link
             href="/dashboard"
-            className="hover:text-zinc-300 transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             Tableau de bord
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-zinc-100">Parametres</span>
+          <span className="text-foreground">Parametres</span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
           <Settings className="h-6 w-6 text-primary" />
           Parametres
         </h1>
-        <p className="text-zinc-500 mt-1">
+        <p className="text-muted-foreground mt-1">
           Gerez votre compte, votre commerce et votre abonnement
         </p>
       </div>
 
       {/* Profile Section */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-zinc-100">Profil</h2>
-        <Card className="bg-zinc-950 border-zinc-800 rounded-xl">
+        <h2 className="text-lg font-semibold text-foreground">Profil</h2>
+        <Card className="bg-card border-border rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-4">
               {user?.image ? (
@@ -116,17 +126,17 @@ export default function SettingsPage() {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-zinc-100 truncate">
+                <p className="font-medium text-foreground truncate">
                   {user?.name ?? "Chargement..."}
                 </p>
-                <p className="text-sm text-zinc-500 truncate">
+                <p className="text-sm text-muted-foreground truncate">
                   {user?.email ?? ""}
                 </p>
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                className="border-zinc-700 text-zinc-300 hover:text-zinc-100"
+                className="border-border text-foreground hover:text-foreground"
               >
                 Modifier
               </Button>
@@ -137,21 +147,21 @@ export default function SettingsPage() {
 
       {/* Linked Accounts */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
-          <Link2 className="h-5 w-5 text-zinc-400" />
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Link2 className="h-5 w-5 text-muted-foreground" />
           Comptes lies
         </h2>
-        <Card className="bg-zinc-950 border-zinc-800 rounded-xl">
+        <Card className="bg-card border-border rounded-xl">
           <CardContent className="p-5 space-y-3">
             {/* Google */}
-            <div className="flex items-center justify-between rounded-lg border border-zinc-800 p-4">
+            <div className="flex items-center justify-between rounded-lg border border-border p-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-800">
+                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-secondary">
                   <GoogleIcon className="h-4 w-4" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-zinc-100">Google</p>
+                    <p className="text-sm font-medium text-foreground">Google</p>
                     {isGoogleLinked ? (
                       <Badge
                         variant="secondary"
@@ -162,13 +172,13 @@ export default function SettingsPage() {
                     ) : (
                       <Badge
                         variant="secondary"
-                        className="bg-zinc-800 text-zinc-500 border-0 text-[10px] px-1.5 py-0"
+                        className="bg-secondary text-muted-foreground border-0 text-[10px] px-1.5 py-0"
                       >
                         Non connecte
                       </Badge>
                     )}
                   </div>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-muted-foreground">
                     Connexion avec Google
                   </p>
                 </div>
@@ -186,7 +196,7 @@ export default function SettingsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-zinc-700 text-zinc-300 hover:text-zinc-100"
+                  className="border-border text-foreground hover:text-foreground"
                   onClick={() =>
                     signIn.social({
                       provider: "google",
@@ -200,14 +210,14 @@ export default function SettingsPage() {
             </div>
 
             {/* GitHub */}
-            <div className="flex items-center justify-between rounded-lg border border-zinc-800 p-4">
+            <div className="flex items-center justify-between rounded-lg border border-border p-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-800 text-zinc-300">
+                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-secondary text-foreground">
                   <GitHubIcon className="h-4 w-4" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-zinc-100">GitHub</p>
+                    <p className="text-sm font-medium text-foreground">GitHub</p>
                     {isGitHubLinked ? (
                       <Badge
                         variant="secondary"
@@ -218,13 +228,13 @@ export default function SettingsPage() {
                     ) : (
                       <Badge
                         variant="secondary"
-                        className="bg-zinc-800 text-zinc-500 border-0 text-[10px] px-1.5 py-0"
+                        className="bg-secondary text-muted-foreground border-0 text-[10px] px-1.5 py-0"
                       >
                         Non connecte
                       </Badge>
                     )}
                   </div>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-muted-foreground">
                     Connexion avec GitHub
                   </p>
                 </div>
@@ -242,7 +252,7 @@ export default function SettingsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-zinc-700 text-zinc-300 hover:text-zinc-100"
+                  className="border-border text-foreground hover:text-foreground"
                   onClick={() =>
                     signIn.social({
                       provider: "github",
@@ -260,38 +270,38 @@ export default function SettingsPage() {
 
       {/* Organization Section */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-zinc-400" />
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Building2 className="h-5 w-5 text-muted-foreground" />
           Organisation
         </h2>
-        <Card className="bg-zinc-950 border-zinc-800 rounded-xl">
+        <Card className="bg-card border-border rounded-xl">
           <CardContent className="p-5">
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-zinc-400">
+                <label className="text-sm font-medium text-muted-foreground">
                   Nom du commerce
                 </label>
                 <Input
                   placeholder="Ex: Boutique Chez Awa"
-                  className="bg-zinc-900 border-zinc-800 text-zinc-100"
+                  className="bg-muted border-border text-foreground"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-zinc-400">
+                <label className="text-sm font-medium text-muted-foreground">
                   Secteur
                 </label>
                 <Input
                   placeholder="Ex: Alimentation generale"
-                  className="bg-zinc-900 border-zinc-800 text-zinc-100"
+                  className="bg-muted border-border text-foreground"
                 />
               </div>
               <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-sm font-medium text-zinc-400">
+                <label className="text-sm font-medium text-muted-foreground">
                   Ville
                 </label>
                 <Input
                   placeholder="Ex: Abidjan"
-                  className="bg-zinc-900 border-zinc-800 text-zinc-100"
+                  className="bg-muted border-border text-foreground"
                 />
               </div>
             </div>
@@ -304,24 +314,76 @@ export default function SettingsPage() {
         </Card>
       </section>
 
+      {/* Apparence Section */}
+      <section className="space-y-4">
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Palette className="h-5 w-5 text-muted-foreground" />
+          Apparence
+        </h2>
+        <Card className="bg-card border-border rounded-xl">
+          <CardContent className="p-5">
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Choisissez le theme de l&apos;interface
+              </p>
+              <div className="flex gap-1 rounded-lg bg-muted p-1">
+                <button
+                  onClick={() => setTheme("light")}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
+                    currentTheme === "light"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Sun className="h-4 w-4" />
+                  Clair
+                </button>
+                <button
+                  onClick={() => setTheme("dark")}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
+                    currentTheme === "dark"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Moon className="h-4 w-4" />
+                  Sombre
+                </button>
+                <button
+                  onClick={() => setTheme("system")}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
+                    currentTheme === "system"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Monitor className="h-4 w-4" />
+                  Systeme
+                </button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
       {/* Billing Link Card */}
       <Link href="/dashboard/parametres/abonnement">
-        <Card className="border-teal-500/40 bg-zinc-950 hover:border-teal-500/70 transition-colors cursor-pointer group rounded-xl">
+        <Card className="border-teal-500/40 bg-card hover:border-teal-500/70 transition-colors cursor-pointer group rounded-xl">
           <CardContent className="flex items-center justify-between p-5">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-500/10">
                 <CreditCard className="h-5 w-5 text-teal-400" />
               </div>
               <div>
-                <p className="font-medium text-zinc-100">
+                <p className="font-medium text-foreground">
                   Abonnement & Facturation
                 </p>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-muted-foreground">
                   Gerez votre abonnement et vos factures
                 </p>
               </div>
             </div>
-            <ArrowRight className="h-5 w-5 text-zinc-500 group-hover:text-teal-400 transition-colors" />
+            <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-teal-400 transition-colors" />
           </CardContent>
         </Card>
       </Link>

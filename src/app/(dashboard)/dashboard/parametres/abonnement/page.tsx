@@ -96,31 +96,31 @@ export default function AbonnementPage() {
     <div className="max-w-2xl mx-auto space-y-8 pb-10">
       {/* Breadcrumb + Title */}
       <div>
-        <div className="flex items-center gap-1.5 text-sm text-zinc-500 mb-2">
+        <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
           <Link
             href="/dashboard/parametres"
-            className="hover:text-zinc-300 transition-colors inline-flex items-center gap-1"
+            className="hover:text-foreground transition-colors inline-flex items-center gap-1"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Parametres
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-zinc-100">Abonnement</span>
+          <span className="text-foreground">Abonnement</span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-100 flex items-center gap-2">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
           <CreditCard className="h-6 w-6 text-primary" />
           Abonnement
         </h1>
-        <p className="text-zinc-500 mt-1">
+        <p className="text-muted-foreground mt-1">
           Gerez votre plan et suivez votre consommation
         </p>
       </div>
 
       {/* Current Plan */}
-      <Card className="bg-zinc-950 border-zinc-800">
+      <Card className="bg-card border-border">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base text-zinc-100">Plan actuel</CardTitle>
+            <CardTitle className="text-base text-foreground">Plan actuel</CardTitle>
             <Badge className="bg-primary/10 text-primary border-primary/20">
               Starter
             </Badge>
@@ -128,11 +128,11 @@ export default function AbonnementPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-bold font-mono text-zinc-100">Gratuit</span>
+            <span className="text-3xl font-bold font-mono text-foreground">Gratuit</span>
           </div>
           <ul className="grid gap-2 sm:grid-cols-2">
             {starterFeatures.map((feature) => (
-              <li key={feature} className="flex items-center gap-2 text-sm text-zinc-400">
+              <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                 {feature}
               </li>
@@ -143,7 +143,7 @@ export default function AbonnementPage() {
 
       {/* Usage Meters */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-zinc-100">Utilisation</h2>
+        <h2 className="text-lg font-semibold text-foreground">Utilisation</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {usageMeters.map((meter) => {
             const percentage =
@@ -152,33 +152,33 @@ export default function AbonnementPage() {
             const isUnavailable = meter.max === 0;
 
             return (
-              <Card key={meter.label} className="bg-zinc-950 border-zinc-800">
+              <Card key={meter.label} className="bg-card border-border">
                 <CardContent className="pt-4 pb-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <meter.icon className="h-4 w-4 text-zinc-500" />
-                      <span className="text-sm font-medium text-zinc-300">
+                      <meter.icon className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium text-foreground">
                         {meter.label}
                       </span>
                     </div>
-                    <span className="text-sm font-mono text-zinc-400">
+                    <span className="text-sm font-mono text-muted-foreground">
                       {isUnavailable ? (
-                        <span className="text-zinc-600">Non inclus</span>
+                        <span className="text-muted-foreground">Non inclus</span>
                       ) : (
                         <>
                           {meter.current}
-                          <span className="text-zinc-600">/{meter.max}</span>
+                          <span className="text-muted-foreground">/{meter.max}</span>
                         </>
                       )}
                     </span>
                   </div>
-                  <div className="h-1.5 w-full rounded-full bg-zinc-800">
+                  <div className="h-1.5 w-full rounded-full bg-secondary">
                     <div
                       className={`h-1.5 rounded-full transition-all ${
                         isMaxed
                           ? "bg-amber-500"
                           : isUnavailable
-                          ? "bg-zinc-700"
+                          ? "bg-muted"
                           : "bg-primary"
                       }`}
                       style={{ width: `${isUnavailable ? 0 : percentage}%` }}
@@ -191,13 +191,13 @@ export default function AbonnementPage() {
         </div>
       </section>
 
-      <Separator className="bg-zinc-800" />
+      <Separator className="bg-secondary" />
 
       {/* Upgrade Plans */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <TrendingUp className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold text-zinc-100">
+          <h2 className="text-lg font-semibold text-foreground">
             Passer au niveau superieur
           </h2>
         </div>
@@ -205,15 +205,15 @@ export default function AbonnementPage() {
           {plans.map((plan) => (
             <Card
               key={plan.name}
-              className={`bg-zinc-950 ${
+              className={`bg-card ${
                 plan.highlight
                   ? "border-primary/40 ring-1 ring-primary/10"
-                  : "border-zinc-800"
+                  : "border-border"
               }`}
             >
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base text-zinc-100">
+                  <CardTitle className="text-base text-foreground">
                     {plan.name}
                   </CardTitle>
                   {plan.highlight && (
@@ -222,14 +222,14 @@ export default function AbonnementPage() {
                     </Badge>
                   )}
                 </div>
-                <p className="text-xs text-zinc-500">{plan.description}</p>
+                <p className="text-xs text-muted-foreground">{plan.description}</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold font-mono text-zinc-100">
+                  <span className="text-2xl font-bold font-mono text-foreground">
                     {plan.price}
                   </span>
-                  <span className="text-sm text-zinc-500">
+                  <span className="text-sm text-muted-foreground">
                     FCFA{plan.period}
                   </span>
                 </div>
@@ -237,7 +237,7 @@ export default function AbonnementPage() {
                   {plan.features.map((feature) => (
                     <li
                       key={feature}
-                      className="flex items-center gap-2 text-sm text-zinc-400"
+                      className="flex items-center gap-2 text-sm text-muted-foreground"
                     >
                       <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                       {feature}
@@ -248,7 +248,7 @@ export default function AbonnementPage() {
                   className={`w-full ${
                     plan.highlight
                       ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                      : "bg-zinc-800 hover:bg-zinc-700 text-zinc-100"
+                      : "bg-secondary hover:bg-muted text-foreground"
                   }`}
                 >
                   <Zap className="h-4 w-4 mr-2" />
@@ -260,24 +260,24 @@ export default function AbonnementPage() {
         </div>
       </section>
 
-      <Separator className="bg-zinc-800" />
+      <Separator className="bg-secondary" />
 
       {/* Billing History */}
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
-          <Receipt className="h-5 w-5 text-zinc-400" />
+        <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+          <Receipt className="h-5 w-5 text-muted-foreground" />
           Historique de facturation
         </h2>
-        <Card className="bg-zinc-950 border-zinc-800">
+        <Card className="bg-card border-border">
           <CardContent className="py-12">
             <div className="flex flex-col items-center justify-center text-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-zinc-800/50 mb-4">
-                <Receipt className="h-7 w-7 text-zinc-500" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary/50 mb-4">
+                <Receipt className="h-7 w-7 text-muted-foreground" />
               </div>
-              <h3 className="text-base font-medium text-zinc-100 mb-1">
+              <h3 className="text-base font-medium text-foreground mb-1">
                 Aucune facture
               </h3>
-              <p className="text-sm text-zinc-500 max-w-xs">
+              <p className="text-sm text-muted-foreground max-w-xs">
                 Votre historique de facturation apparaitra ici lorsque vous
                 souscrirez a un plan payant
               </p>
