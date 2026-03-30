@@ -13,6 +13,7 @@ import {
   Settings,
 } from "lucide-react";
 import { DukaLogo } from "@/components/duka-logo";
+import { Badge } from "@/components/ui/badge";
 import { useSession } from "@/lib/auth-client";
 import {
   Sidebar,
@@ -100,6 +101,9 @@ export function AppSidebar() {
                     <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
+                      {item.title === "IA" && (
+                        <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0">PRO</Badge>
+                      )}
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

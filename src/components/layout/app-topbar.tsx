@@ -3,14 +3,20 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { Bell, Settings, LogOut, ChevronDown } from "lucide-react";
+import { Bell, Settings, LogOut, ChevronDown, Sun, Moon } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "@/lib/auth-client";
+import { useTheme } from "next-themes";
 
 export function AppTopbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { data: session } = useSession();
+  const { theme, setTheme } = useTheme();
+
+  const unreadCount = 0;
 
   const userInitial =
     session?.user?.name?.[0]?.toUpperCase() ||
@@ -26,12 +32,65 @@ export function AppTopbar() {
       <div className="flex-1" />
 
       {/* Notifications */}
-      <button
-        className="relative rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-200"
-        aria-label="Notifications"
+      <div className="relative">
+        <button
+          onClick={() => setNotificationsOpen(!notificationsOpen)}
+          className="relative rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800/50 hover:text-zinc-200"
+          aria-label="Notifications"
+        >
+          <Bell className="size-4" />
+          {unreadCount > 0 && (
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
+          )}
+        </button>
+
+        <AnimatePresence>
+          {notificationsOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setNotificationsOpen(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg border border-zinc-800 bg-zinc-900 shadow-xl"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
+                  <h3 className="text-sm font-semibold text-zinc-200">
+                    Notifications
+                  </h3>
+                  <button className="text-xs text-zinc-500 transition-colors hover:text-zinc-300">
+                    Tout marquer comme lu
+                  </button>
+                </div>
+
+                {/* Empty state */}
+                <div className="flex flex-col items-center justify-center gap-2 px-4 py-8">
+                  <Bell className="size-8 text-zinc-600" />
+                  <p className="text-sm text-zinc-500">Aucune notification</p>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Theme toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       >
-        <Bell className="size-4" />
-      </button>
+        {theme === "dark" ? (
+          <Sun className="h-4 w-4" />
+        ) : (
+          <Moon className="h-4 w-4" />
+        )}
+      </Button>
 
       {/* User profile dropdown */}
       <div className="relative">
