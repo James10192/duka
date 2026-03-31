@@ -42,9 +42,11 @@ export default async function ClientsPage() {
             {clients.length} client{clients.length > 1 ? "s" : ""} dans votre base
           </p>
         </div>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Nouveau client
+        <Button asChild>
+          <Link href="/dashboard/clients/nouveau">
+            <Plus className="mr-2 h-4 w-4" />
+            Nouveau client
+          </Link>
         </Button>
       </div>
 

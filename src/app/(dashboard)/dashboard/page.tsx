@@ -15,6 +15,10 @@ import { getDashboardStats } from "@/actions/sales";
 import { formatCFA } from "@/lib/utils";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import {
+  RevenueChart,
+  TopProductsChart,
+} from "@/components/dashboard/revenue-chart";
 
 export default async function DashboardPage() {
   let orgs;
@@ -41,6 +45,23 @@ export default async function DashboardPage() {
     PARTIAL: "Partiel",
     PENDING: "En attente",
   };
+
+  // Aggregate sales by date for the revenue chart
+  const revenueByDate: Record<string, number> = {};
+  for (const sale of stats.recentSales) {
+    const day = format(new Date(sale.date), "dd/MM", { locale: fr });
+    revenueByDate[day] = (revenueByDate[day] ?? 0) + sale.total;
+  }
+  const revenueChartData = Object.entries(revenueByDate)
+    .map(([date, revenue]) => ({ date, revenue }))
+    .reverse();
+
+  // Prepare top products chart data
+  const topProductsChartData = stats.topProducts.map((p) => ({
+    name: p.name,
+    revenue: p.revenue,
+    quantity: p.quantitySold,
+  }));
 
   return (
     <div className="space-y-6">
@@ -108,11 +129,32 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
+      {/* Charts row */}
       <div className="grid gap-4 lg:grid-cols-7">
-        {/* Top products */}
         <Card className="lg:col-span-4">
           <CardHeader>
+            <CardTitle className="text-base">Evolution du CA</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RevenueChart data={revenueChartData} />
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-3">
+          <CardHeader>
             <CardTitle className="text-base">Top produits du mois</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TopProductsChart data={topProductsChartData} />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Stock alerts + top products list */}
+      <div className="grid gap-4 lg:grid-cols-7">
+        <Card className="lg:col-span-4">
+          <CardHeader>
+            <CardTitle className="text-base">Top produits (details)</CardTitle>
           </CardHeader>
           <CardContent>
             {stats.topProducts.length === 0 ? (
@@ -145,7 +187,6 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Low stock alerts */}
         <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
@@ -156,23 +197,29 @@ export default async function DashboardPage() {
           <CardContent>
             {stats.lowStockProducts.length === 0 ? (
               <div className="flex h-48 items-center justify-center text-muted-foreground">
-                Aucune alerte pour le moment
+                Aucune alerte stock
               </div>
             ) : (
               <div className="space-y-3">
                 {stats.lowStockProducts.slice(0, 8).map((p) => (
-                  <div key={p.id} className="flex items-center justify-between">
+                  <Link
+                    key={p.id}
+                    href={`/dashboard/produits/${p.id}`}
+                    className="flex items-center justify-between rounded-lg px-2 py-1.5 transition-colors hover:bg-muted/50"
+                  >
                     <div>
                       <p className="text-sm font-medium">{p.name}</p>
                       <p className="text-xs text-muted-foreground font-mono">{p.ref}</p>
                     </div>
-                    <Badge
-                      variant={p.stock === 0 ? "destructive" : "secondary"}
-                      className="font-mono"
-                    >
-                      {p.stock} / {p.minStock}
-                    </Badge>
-                  </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="destructive" className="font-mono">
+                        {p.stock}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        / {p.minStock}
+                      </span>
+                    </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -195,7 +242,7 @@ export default async function DashboardPage() {
         <CardContent>
           {stats.recentSales.length === 0 ? (
             <div className="flex h-32 items-center justify-center text-muted-foreground">
-              Aucune vente enregistree
+              Aucune vente recente
             </div>
           ) : (
             <div className="rounded-lg border border-border">
@@ -205,7 +252,6 @@ export default async function DashboardPage() {
                     <th className="px-4 py-3 font-medium">Date</th>
                     <th className="px-4 py-3 font-medium">Facture</th>
                     <th className="px-4 py-3 font-medium">Client</th>
-                    <th className="px-4 py-3 font-medium">Articles</th>
                     <th className="px-4 py-3 text-right font-medium">Total</th>
                     <th className="px-4 py-3 font-medium">Paiement</th>
                     <th className="px-4 py-3 font-medium">Statut</th>
@@ -217,14 +263,16 @@ export default async function DashboardPage() {
                       <td className="px-4 py-3 text-muted-foreground">
                         {format(new Date(sale.date), "dd/MM/yyyy HH:mm", { locale: fr })}
                       </td>
-                      <td className="px-4 py-3 font-mono text-xs">
-                        {sale.invoiceNumber}
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/dashboard/ventes/${sale.id}`}
+                          className="font-mono text-xs hover:underline"
+                        >
+                          {sale.invoiceNumber}
+                        </Link>
                       </td>
                       <td className="px-4 py-3">
                         {sale.client?.name ?? "Client comptoir"}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground">
-                        {sale.items.length} article{sale.items.length > 1 ? "s" : ""}
                       </td>
                       <td className="px-4 py-3 text-right font-mono font-medium">
                         {formatCFA(sale.total)}
