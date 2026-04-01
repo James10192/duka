@@ -219,6 +219,8 @@ export async function getDashboardStats(orgId: string, storeId?: string) {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  // Also use last 30 days for stats (handles month transitions)
+  const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
   const storeFilter = storeId ? { storeId } : {};
 
@@ -242,25 +244,25 @@ export async function getDashboardStats(orgId: string, storeId?: string) {
       _count: { id: true },
     }),
 
-    // Month's sales
+    // Month's sales (last 30 days to handle month transitions)
     prisma.sale.aggregate({
       where: {
         orgId,
         ...storeFilter,
-        date: { gte: monthStart },
+        date: { gte: last30Days },
       },
       _sum: { total: true },
       _count: { id: true },
     }),
 
-    // Top 5 products by revenue (this month)
+    // Top 5 products by revenue (last 30 days)
     prisma.saleItem.groupBy({
       by: ["productId"],
       where: {
         sale: {
           orgId,
           ...storeFilter,
-          date: { gte: monthStart },
+          date: { gte: last30Days },
         },
       },
       _sum: { total: true, quantity: true },
@@ -330,13 +332,13 @@ export async function getDashboardStats(orgId: string, storeId?: string) {
     };
   });
 
-  // Calculate gross margin for the month
+  // Calculate gross margin (last 30 days)
   const monthSaleItems = await prisma.saleItem.findMany({
     where: {
       sale: {
         orgId,
         ...storeFilter,
-        date: { gte: monthStart },
+        date: { gte: last30Days },
       },
     },
     include: {

@@ -47,28 +47,35 @@ export function RevenueChart({
             <stop
               offset="5%"
               stopColor="var(--color-revenue)"
-              stopOpacity={0.3}
+              stopOpacity={0.5}
             />
             <stop
               offset="95%"
               stopColor="var(--color-revenue)"
-              stopOpacity={0.02}
+              stopOpacity={0.05}
             />
           </linearGradient>
         </defs>
-        <CartesianGrid vertical={false} strokeDasharray="3 3" />
+        <CartesianGrid
+          vertical={false}
+          strokeDasharray="3 3"
+          stroke="hsl(var(--border))"
+          strokeOpacity={0.5}
+        />
         <XAxis
           dataKey="date"
           tickLine={false}
           axisLine={false}
           tickMargin={8}
           fontSize={12}
+          stroke="hsl(var(--muted-foreground))"
         />
         <YAxis
           tickLine={false}
           axisLine={false}
           tickMargin={4}
           fontSize={11}
+          stroke="hsl(var(--muted-foreground))"
           tickFormatter={(v: number) =>
             v >= 1000 ? `${Math.round(v / 1000)}k` : String(v)
           }
@@ -121,12 +128,18 @@ export function TopProductsChart({
         layout="vertical"
         margin={{ top: 4, right: 4, bottom: 0, left: 0 }}
       >
-        <CartesianGrid horizontal={false} strokeDasharray="3 3" />
+        <CartesianGrid
+          horizontal={false}
+          strokeDasharray="3 3"
+          stroke="hsl(var(--border))"
+          strokeOpacity={0.5}
+        />
         <XAxis
           type="number"
           tickLine={false}
           axisLine={false}
           fontSize={11}
+          stroke="hsl(var(--muted-foreground))"
           tickFormatter={(v: number) =>
             v >= 1000 ? `${Math.round(v / 1000)}k` : String(v)
           }
@@ -138,6 +151,7 @@ export function TopProductsChart({
           axisLine={false}
           fontSize={12}
           width={120}
+          stroke="hsl(var(--muted-foreground))"
           tickFormatter={(v: string) =>
             v.length > 18 ? v.slice(0, 16) + "..." : v
           }
@@ -157,6 +171,7 @@ export function TopProductsChart({
           dataKey="revenue"
           fill="var(--color-revenue)"
           radius={[0, 4, 4, 0]}
+          opacity={0.85}
         />
       </BarChart>
     </ChartContainer>
