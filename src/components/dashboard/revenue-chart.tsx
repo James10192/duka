@@ -17,12 +17,17 @@ import {
 } from "@/components/ui/chart";
 import { formatCFA } from "@/lib/utils";
 
+const TEAL = "#14b8a6";
+const TEAL_LIGHT = "#2dd4bf";
+const GRID = "#27272a";
+const AXIS = "#71717a";
+
 // --- Revenue Area Chart ---
 
 const revenueConfig = {
   revenue: {
     label: "Chiffre d'affaires",
-    color: "hsl(var(--primary))",
+    color: TEAL,
   },
 } satisfies ChartConfig;
 
@@ -41,26 +46,17 @@ export function RevenueChart({
 
   return (
     <ChartContainer config={revenueConfig} className="h-64 w-full">
-      <AreaChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+      <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
         <defs>
           <linearGradient id="fillRevenue" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="5%"
-              stopColor="var(--color-revenue)"
-              stopOpacity={0.5}
-            />
-            <stop
-              offset="95%"
-              stopColor="var(--color-revenue)"
-              stopOpacity={0.05}
-            />
+            <stop offset="0%" stopColor={TEAL} stopOpacity={0.4} />
+            <stop offset="100%" stopColor={TEAL} stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <CartesianGrid
           vertical={false}
           strokeDasharray="3 3"
-          stroke="hsl(var(--border))"
-          strokeOpacity={0.5}
+          stroke={GRID}
         />
         <XAxis
           dataKey="date"
@@ -68,14 +64,14 @@ export function RevenueChart({
           axisLine={false}
           tickMargin={8}
           fontSize={12}
-          stroke="hsl(var(--muted-foreground))"
+          tick={{ fill: AXIS }}
         />
         <YAxis
           tickLine={false}
           axisLine={false}
           tickMargin={4}
           fontSize={11}
-          stroke="hsl(var(--muted-foreground))"
+          tick={{ fill: AXIS }}
           tickFormatter={(v: number) =>
             v >= 1000 ? `${Math.round(v / 1000)}k` : String(v)
           }
@@ -90,8 +86,8 @@ export function RevenueChart({
         <Area
           type="monotone"
           dataKey="revenue"
-          stroke="var(--color-revenue)"
-          strokeWidth={2}
+          stroke={TEAL_LIGHT}
+          strokeWidth={2.5}
           fill="url(#fillRevenue)"
         />
       </AreaChart>
@@ -104,7 +100,7 @@ export function RevenueChart({
 const productsConfig = {
   revenue: {
     label: "CA",
-    color: "hsl(var(--primary))",
+    color: TEAL,
   },
 } satisfies ChartConfig;
 
@@ -126,20 +122,19 @@ export function TopProductsChart({
       <BarChart
         data={data}
         layout="vertical"
-        margin={{ top: 4, right: 4, bottom: 0, left: 0 }}
+        margin={{ top: 4, right: 8, bottom: 0, left: 0 }}
       >
         <CartesianGrid
           horizontal={false}
           strokeDasharray="3 3"
-          stroke="hsl(var(--border))"
-          strokeOpacity={0.5}
+          stroke={GRID}
         />
         <XAxis
           type="number"
           tickLine={false}
           axisLine={false}
           fontSize={11}
-          stroke="hsl(var(--muted-foreground))"
+          tick={{ fill: AXIS }}
           tickFormatter={(v: number) =>
             v >= 1000 ? `${Math.round(v / 1000)}k` : String(v)
           }
@@ -149,11 +144,11 @@ export function TopProductsChart({
           dataKey="name"
           tickLine={false}
           axisLine={false}
-          fontSize={12}
-          width={120}
-          stroke="hsl(var(--muted-foreground))"
+          fontSize={11}
+          width={110}
+          tick={{ fill: AXIS }}
           tickFormatter={(v: string) =>
-            v.length > 18 ? v.slice(0, 16) + "..." : v
+            v.length > 16 ? v.slice(0, 14) + "..." : v
           }
         />
         <ChartTooltip
@@ -169,9 +164,8 @@ export function TopProductsChart({
         />
         <Bar
           dataKey="revenue"
-          fill="var(--color-revenue)"
-          radius={[0, 4, 4, 0]}
-          opacity={0.85}
+          fill={TEAL}
+          radius={[0, 6, 6, 0]}
         />
       </BarChart>
     </ChartContainer>
